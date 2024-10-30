@@ -88,44 +88,16 @@ jobs:
           # Install Python dependencies
           echo "installing python dependencies"
           python3 -m pip install -r requirements.txt
-          
-          # Check if CDK bootstrap has been completed
-          echo "checking if CDK bootstrap has completed"
-          bootstrap_ref_file="bootstrap.ref"
-          
-          if [ -f "$bootstrap_ref_file" ]; then
-              echo "Skipping CDK bootstrap process."
+
+          # run CDK bootstrap
+          echo "Running CDK bootstrap..."
+          cdk bootstrap --require-approval never --context cognitoDomain="$cognitoDomain" --context allowlistDomain="$allowListDomain"
+          if [ $? -eq 0 ]; then
+              echo "CDK bootstrap completed successfully."
           else
-              if [ -n "$run_bootstrap" ]; then
-                  # If --headless flag is used, run cdk bootstrap
-                  echo "Running CDK bootstrap..."
-                  cdk bootstrap --require-approval never --context cognitoDomain="$cognitoDomain" --context allowlistDomain="$allowListDomain"
-                  if [ $? -eq 0 ]; then
-                      echo "CDK bootstrap completed successfully."
-                  else
-                      echo "Failed to run CDK bootstrap."
-                      exit 1
-                  fi
-              else
-                  read -p "Do you want to run cdk Bootstrap now (if you don't know, assume Yes)? (y/n) " run_bootstrap
-                  case "$run_bootstrap" in
-                      [yY][eE][sS]|[yY])
-                          echo "Running CDK bootstrap..."
-                          cdk bootstrap --require-approval never --context cognitoDomain="$cognitoDomain" --context allowlistDomain="$allowListDomain"
-                          if [ $? -eq 0 ]; then
-                              echo "CDK bootstrap completed successfully."
-                          else
-                              echo "Failed to run CDK bootstrap."
-                              exit 1
-                          fi
-                          ;;
-                      *)
-                          echo "Skipping CDK bootstrap process."
-                          ;;
-                  esac
-              fi
+              echo "Failed to run CDK bootstrap."
+              exit 1
           fi
-          touch "$bootstrap_ref_file"
           
           # Deploy the CDK app
           echo "deploy the CDK app"
