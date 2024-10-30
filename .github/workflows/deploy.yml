@@ -34,6 +34,9 @@ jobs:
           #unzip awscliv2.zip
           #./aws/install
 
+          # Install AWS CDK
+          npm install -g aws-cdk
+
           python3 --version
           git --version
           node --version
