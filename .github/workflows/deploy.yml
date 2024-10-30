@@ -12,6 +12,8 @@ on:
 jobs:
   run_tests:
     runs-on: ubuntu-20.04
+    environment: test
+    
     steps:
     - uses: actions/checkout@v2
     - name: Run script file
