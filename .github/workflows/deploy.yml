@@ -30,12 +30,12 @@ jobs:
           sudo apt-get install -y jq
       
           # Install AWS CLI
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          ./aws/install
+          #curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          #unzip awscliv2.zip
+          #./aws/install
 
           python3 --version
-          #git --version
+          git --version
           node --version
           jq --version
           aws --version
