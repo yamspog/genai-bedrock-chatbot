@@ -91,7 +91,7 @@ jobs:
 
           # run CDK bootstrap
           echo "Running CDK bootstrap..."
-          cdk bootstrap --require-approval never --context cognitoDomain="$cognitoDomain" --context allowlistDomain="$allowListDomain"
+          cdk bootstrap --require-approval never --context cognitoDomain="${cognitoDomain}" --context allowlistDomain="${allowListDomain}"
           if [ $? -eq 0 ]; then
               echo "CDK bootstrap completed successfully."
           else
@@ -101,7 +101,7 @@ jobs:
           
           # Deploy the CDK app
           echo "deploy the CDK app"
-          cdk deploy --outputs-file outputs.json --context cognitoDomain="$cognitoDomain" --context allowlistDomain="$allowListDomain" --require-approval never $app_flag $context_flag $debug_flag $profile_flag $tags_flag $force_flag $verbose_flag $role_arn_flag
+          cdk deploy --outputs-file outputs.json --context cognitoDomain="${cognitoDomain}" --context allowlistDomain="${allowListDomain}" --require-approval never 
           if [ $? -ne 0 ]; then
               echo "Error: CDK deployment failed. Exiting script."
               exit 1
