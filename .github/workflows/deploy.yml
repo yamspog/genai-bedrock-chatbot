@@ -22,6 +22,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         AWS_DEFAULT_OUTPUT: json
+        allowListDomain : ${{ vars.ALLOW_LIST_DOMAIN }}
       run: |
         #apt-get update -qy
         #apt-get install -y curl gnupg software-properties-common
@@ -57,44 +58,8 @@ jobs:
           python3 -m pip install -r requirements.txt
           cd ..
 
-          has_colors() {
-              local has_colors=false
-              if [ -t 1 ]; then
-                  if command -v tput >/dev/null 2>&1; then
-                      if [ "$TERM" != linux ]; then
-                          has_colors=true
-                      fi
-                  fi
-              fi
-              echo $has_colors
-          }
-          
-          if $(has_colors); then
-              # Use color codes
-              DEFAULT_COLOR="\033[0m"
-              GREEN_COLOR="\033[0;32m"
-              RED_COLOR="\033[0;31m"
-          else
-              # Don't use color codes
-              DEFAULT_COLOR=""
-              GREEN_COLOR=""
-              RED_COLOR=""
-          fi
-
-          user_pool_id=$(aws cognito-idp list-user-pools --max-results 60 --query 'UserPools[?contains(Name, `ChatbotUserPool`)].Id' --output text)
-          if [ -n "$user_pool_id" ] && [ "$user_pool_id" != "None" ]; then
-              cognitoDomain=$(aws cognito-idp describe-user-pool --user-pool-id "$user_pool_id" --query 'UserPool.Domain' --output text)
-              if [ -n "$cognitoDomain" ] && [ "$cognitoDomain" != "None" ]; then
-                  echo -e "${DEFAULT_COLOR}User pool found with ID $user_pool_id and domain $cognitoDomain"
-              else
-                  echo -e "${DEFAULT_COLOR}User pool found with ID $user_pool_id, but no Domain"
-                  cognitoDomain="genchatbot-$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c 8)-$(date +%y%m%d%H%M)"
-                  echo -e "${DEFAULT_COLOR}New Domain Set: $cognitoDomain"
-              fi
-          else
-              cognitoDomain="genchatbot-$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c 8)-$(date +%y%m%d%H%M)"
-              echo -e "${DEFAULT_COLOR}No User Pool or Domain Found, Creating New Domain: $cognitoDomain"
-          fi
+          chmod u+x ./deploy.sh
+          ./deploy.sh
 
           
       shell: bash
