@@ -86,9 +86,11 @@ jobs:
           fi
           
           # Install Python dependencies
+          echo "installing python dependencies"
           python3 -m pip install -r requirements.txt
           
           # Check if CDK bootstrap has been completed
+          echo "checking if CDK bootstrap has completed"
           bootstrap_ref_file="bootstrap.ref"
           
           if [ -f "$bootstrap_ref_file" ]; then
@@ -126,6 +128,7 @@ jobs:
           touch "$bootstrap_ref_file"
           
           # Deploy the CDK app
+          echo "deploy the CDK app"
           cdk deploy --outputs-file outputs.json --context cognitoDomain="$cognitoDomain" --context allowlistDomain="$allowListDomain" --require-approval never $app_flag $context_flag $debug_flag $profile_flag $tags_flag $force_flag $verbose_flag $role_arn_flag
           if [ $? -ne 0 ]; then
               echo "Error: CDK deployment failed. Exiting script."
