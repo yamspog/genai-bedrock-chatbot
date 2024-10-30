@@ -15,6 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run script file
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       run: |
         #apt-get update -qy
         #apt-get install -y curl gnupg software-properties-common
